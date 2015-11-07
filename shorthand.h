@@ -26,8 +26,17 @@ namespace shorthand {
 * 				flag combination "cd" or "dc"
 * 			else
 * 				no flags input at argv[1]
+* ----------------------------------------------------------------------
+* 			if argv[i] = "a", f.check('a') will return true,
+* 			if it's "b" f.check('b') returns true, and if it's
+* 			"c" or "d" in any combination ("cd" or "dc") then 
+* 				f.check('c') && f.check('d')
+* 			returns true. 
 * 
-* 
+* 			if argv[i] is "abcd", of course, only the first check
+* 			will return true because it's an if..else if statement.
+* 			
+* 			watch out for that.
 */	
 		class flag {
 			private:
