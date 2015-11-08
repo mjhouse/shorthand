@@ -171,14 +171,63 @@ namespace shorthand {
 				
 				int print(){
 					node *t = root;
-					while(t->next!=NULL){
-						std::cout << t->line << std::endl;
-						t = t->next;
+					int i=0;
+					while(t!=NULL){
+						std::cout << i << ": " << t->line << std::endl;
+						t = t->next; i++;
 					}
 					return 1;
 				}		
 		
-				int insert(){}
+				int insert( int i,char* s=0){
+					node *t=root;
+					node *f;
+					if(i!=-1){
+						for(int j=0;t->next!=NULL;j++){
+							if(j==i&&s!=0){
+								f->next = new node();
+								f=f->next; 
+								std::string k(s);
+								f->line = k;			
+								f->next = t;
+								return 1;
+							}
+							f=t;
+							t=t->next;
+						}
+					}
+					else{
+						f = root;
+						while(f->next!=NULL)
+							f=f->next;
+						f->next = new node();
+						f=f->next; 
+						std::string k(s);
+						f->line = k;
+					}
+				}
+				
+				int remove(int i){
+						node *t=root;
+						node *f;
+						while(t!=NULL){
+							if(i==0&&f!=NULL){
+								f->next = t->next;
+								delete t;
+							}
+							else if(f==NULL){
+								//root = root->next;
+								//f=root;
+								//delete f;
+							}
+								
+							f=t;
+							t=t->next;
+							i--;
+						}
+				}
+				
+				
 		};
 }
 
