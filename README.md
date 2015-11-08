@@ -17,10 +17,8 @@ FILE class:
 				
 				file.load(char* p): 			loads the file at path "p" line-by-line into a linked list
 				
-
 				file.save(char* p): 			saves the linked list to path "p"
 				
-
 				file.print(): 					prints each line preceded by line num (0-n)
 				
 				file.insert(int i, char* s): 	inserts "s" at line number "i", moves following lines down
