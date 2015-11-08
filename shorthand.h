@@ -1,5 +1,6 @@
-#include <string.h>
-#include <stdio.h>
+#include <string>
+#include <fstream>
+#include <iostream>
 
 #ifndef SHORTHAND_H 
 #define	SHORTHAND_H
@@ -43,14 +44,6 @@ namespace shorthand {
 				char const *flag_list; //LIST OF FLAGS
 				char *input_list; //USER INPUT TO CHECK
 				
-				int validate_flags(){
-					if(flag_list==0||input_list==0){
-						return 0;
-					}
-					else
-						return 1;
-				}
-				
 				int is_in_flag(char c){
 					for(int i=0;flag_list[i]!='\0';i++){
 						if(c == flag_list[i]){
@@ -93,15 +86,102 @@ namespace shorthand {
 				int check(char c=0){
 					if(c==0)
 						return -1;
-					if(validate_flags()){
-						if(is_in_flag(c)&&is_in_input(c))
-							return 1;
-						else
-							return 0;
-					}
+					if(is_in_flag(c)&&is_in_input(c))
+						return 1;
+					else
+						return 0;
 					return -1;
 				}
+				
+				int valid_input(){
+					if(flag_list==0||input_list==0){ 			//if both lists are null, return FALSE (no lists)
+						return 0;
+					}
+					else{
+						for(int i=0;input_list[i]!='\0';i++){	//for each input char
+							if(!is_in_flag(input_list[i]))		//if it's not a char in flag_list
+							return 0;							//return FALSE (improper input)
+						}
+																//otherwise, return TRUE (both list are good)
+						return 1;
+					}
+				}			
+		};
+		
+		class file{
+			private:
+				class node{
+					public:
+						node(){ line.clear(); next = NULL;}
+						~node(){}
+						
+						node *next;
+						std::string line;
+				};
+			private:
+				node *root;
+				
+			public:
+				//functions to load lines to linked list, manipulate, and save to text files
+				file(){root = new node();}
+				~file(){}
+				
+				std::string line(int i){
+					node *t = root;
+					std::string s;
+					for(i;i>0;i--)
+						t=t->next;
+					if(t!=NULL)
+						return t->line;
+					else
+						return s.erase();
+				}
+				
+				int load(char* s='\0'){
+					if(s!='\0'){
+						node *t = root;
+						std::fstream f;
+						std::string l;
+						f.open(s, std::fstream::in);
+						while(getline(f,l)){
+							t->line = l;
+							t->next = new node();
+							t = t->next;
+						}
+						f.close();
+						return 1;
+					}
+					return 0;
+				}
+						
+				int save(char* s='\0'){
+					if(s!='\0'){
+						node *t = root;
+						std::fstream f;
+						f.open(s, std::fstream::out);
+						while(t->next!=NULL){
+							f << t->line << std::endl;
+							t=t->next;
+						}
+						f.close();
+						return 1;
+					}
+					return 0;
+				}
+				
+				int print(){
+					node *t = root;
+					while(t->next!=NULL){
+						std::cout << t->line << std::endl;
+						t = t->next;
+					}
+					return 1;
+				}		
+		
+				int insert(){}
 		};
 }
+
+
 
 #endif
