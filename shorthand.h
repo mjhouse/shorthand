@@ -112,7 +112,13 @@ namespace shorthand {
 			private:
 				class node{
 					public:
-						node(){ line.clear(); next = NULL;}
+						node(std::string s = std::string()){ 
+							if(!s.empty())
+								line = s; 
+							else
+								line.erase();
+							next = NULL;
+						}
 						~node(){}
 						
 						node *next;
@@ -179,52 +185,38 @@ namespace shorthand {
 					return 1;
 				}		
 		
-				int insert( int i,char* s=0){
+				int insert( int i,char* s){
 					node *t=root;
-					node *f;
-					if(i!=-1){
-						for(int j=0;t->next!=NULL;j++){
-							if(j==i&&s!=0){
-								f->next = new node();
-								f=f->next; 
-								std::string k(s);
-								f->line = k;			
-								f->next = t;
-								return 1;
-							}
-							f=t;
-							t=t->next;
-						}
+					while(i>0){
+						if(t->next==NULL)
+							t->next = new node();
+						i--;
+						t=t->next;
 					}
-					else{
-						f = root;
-						while(f->next!=NULL)
-							f=f->next;
-						f->next = new node();
-						f=f->next; 
-						std::string k(s);
-						f->line = k;
-					}
+					node *j = new node(t->line);
+					std::string k(s); t->line = k;
+					j->next = t->next;
+					t->next = j;
 				}
 				
 				int remove(int i){
-						node *t=root;
-						node *f;
-						while(t!=NULL){
-							if(i==0&&f!=NULL){
-								f->next = t->next;
-								delete t;
-							}
-							else if(f==NULL){
-								//root = root->next;
-								//f=root;
-								//delete f;
-							}
-								
-							f=t;
-							t=t->next;
-							i--;
-						}
+					node *t=root; node *b=NULL;
+					while(i>0){
+						if(t==NULL)
+							return 0;
+						if(i==1)
+							b=t;
+						i--;
+						t=t->next;
+					}
+					if(t==root){
+						root = root->next;
+						delete t;
+					}
+					else{
+						b->next = t->next;
+						delete t;
+					}
 				}
 				
 				
