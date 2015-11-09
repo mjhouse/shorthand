@@ -1,6 +1,7 @@
-#include <string>
+//#include <string>
 #include <fstream>
 #include <iostream>
+#include <dirent.h>
 
 #ifndef SHORTHAND_H 
 #define	SHORTHAND_H
@@ -246,5 +247,10 @@ namespace shorthand {
  * 	both need to be done before bumblebee can work. 
  * 	Alternatively, you could build something else cool
  */
+
+		int exists(char *s){
+			
+			return 0;
+		}
 
 #endif
