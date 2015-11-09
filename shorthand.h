@@ -239,13 +239,12 @@ namespace shorthand {
 }
 
 /*
- * USAGE:
- * 			
+ * POSSIBILITIES:
+ * 	an EXEC function/class
+ * 	a recursive copy function/class
  * 
- * 
- * 
- * 
+ * 	both need to be done before bumblebee can work. 
+ * 	Alternatively, you could build something else cool
  */
-
 
 #endif
