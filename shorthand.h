@@ -274,7 +274,20 @@ namespace shorthand {
 				return -1;
 		}
 
+/*
+ * 
+ * 
+ * 
+ * 
+ */
 
+		int copy(char *in, char *out){
+			if(exists(in)==1&&exists(out)==1){
+				
+			}
+			else
+				return -1;
+		}
 
 
 /*
