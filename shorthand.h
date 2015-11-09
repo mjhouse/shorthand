@@ -1,13 +1,19 @@
-//#include <string>
+//#include <string>  MAY NOT BE NEEDED
 #include <fstream>
 #include <iostream>
-#include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 #ifndef SHORTHAND_H 
 #define	SHORTHAND_H
 
 namespace shorthand {
 /*
+ * 	Flag:
+ * 			Handles true/false flag checking against a hardcoded char array of flags.
+ * 
  *	USAGE: 
  * 			shorthand::flag f( [const char*], [char*]);
  *			if(f.check('c'))
@@ -87,6 +93,9 @@ namespace shorthand {
 		};
 
 /*
+ * File:
+ * 			Less-messy file handling for manipulating text files.
+ * 
  * USAGE: 
  * 			create a file object using "shorthand::file f()", and then use f.line(), f.load(), 
  * 			f.save(), f.print(), f.insert() and f.remove() to-
@@ -237,20 +246,43 @@ namespace shorthand {
 				
 				
 		};
-}
 
 /*
- * POSSIBILITIES:
- * 	an EXEC function/class
- * 	a recursive copy function/class
- * 
- * 	both need to be done before bumblebee can work. 
- * 	Alternatively, you could build something else cool
+ * 	Exists:
+ * 			Simple file existence check. Returns 1 for directory, 0 for file and -1 otherwise.
+ * 	USAGE:
+ * 			Give it a pathname in a character array (char *)
  */
 
-		int exists(char *s){
-			
-			return 0;
+		int exists(char *filepath){
+			if(filepath!='\0'){
+				struct stat *buf;
+				buf = (struct stat *)malloc(sizeof(struct stat));
+				
+				if(stat(filepath,buf)==0){
+					if(S_ISDIR(buf->st_mode)){
+						return 1;
+					}
+					else if(S_ISREG(buf->st_mode)){
+						return -1;
+					}
+				}
+				
+				free(buf);
+			}
+			else
+				return -1;
 		}
 
+
+
+
+/*
+ *	TODO:
+ * 			make a copy function that recursively copies from a given directory down
+ * 			make a simplified exec function 
+ * 			
+ */
+
+}
 #endif
