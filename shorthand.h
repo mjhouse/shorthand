@@ -7,38 +7,15 @@
 
 namespace shorthand {
 /*
-*	USAGE: 
-* 			shorthand::flag f( [const char*], [char*]);
-*			if(f.check('c'))
-* 				do c
-* 			if ...
-* 
-* 			First argument is hardcoded and sets the flag list to compare input against. Second argument
-* 			is the input using argv[i] or something like that. 
-* 
-* 	EXAMPLE:
-* 
-* 			shorthand::flag f("abcd", argv[1])
-* 			if(f.check('a'))
-* 				do A
-* 			else if(f.check('b'))
-* 				do B
-* 			else if(f.check('c') && f.check('d'))
-* 				flag combination "cd" or "dc"
-* 			else
-* 				no flags input at argv[1]
-* ----------------------------------------------------------------------
-* 			if argv[i] = "a", f.check('a') will return true,
-* 			if it's "b" f.check('b') returns true, and if it's
-* 			"c" or "d" in any combination ("cd" or "dc") then 
-* 				f.check('c') && f.check('d')
-* 			returns true. 
-* 
-* 			if argv[i] is "abcd", of course, only the first check
-* 			will return true because it's an if..else if statement.
-* 			
-* 			watch out for that.
-*/	
+ *	USAGE: 
+ * 			shorthand::flag f( [const char*], [char*]);
+ *			if(f.check('c'))
+ * 				do c
+ * 			if ...
+ * 
+ * 			First argument is hardcoded and sets the flag list to compare input against. Second argument
+ * 			is the input using argv[i] or something like that. 
+ */
 		class flag {
 			private:
 				char const *flag_list; //LIST OF FLAGS
@@ -107,9 +84,22 @@ namespace shorthand {
 					}
 				}			
 		};
-		
+
+/*
+ * USAGE: 
+ * 			create a file object using "shorthand::file f()", and then use f.line(), f.load(), 
+ * 			f.save(), f.print(), f.insert() and f.remove() to-
+ * 				* return a string from a node
+ * 				* load a file into the linked list
+ * 				* save the linked list into a text file
+ * 				* print the current list with line numbers
+ * 				* insert a line
+ * 				* and remove a line
+ */
+ 
 		class file{
 			private:
+// NODE ----------------------------------------------------------------
 				class node{
 					public:
 						node(std::string s = std::string()){ 
@@ -128,21 +118,27 @@ namespace shorthand {
 				node *root;
 				
 			public:
-				//functions to load lines to linked list, manipulate, and save to text files
+// CONSTRUCTORS --------------------------------------------------------
 				file(){root = new node();}
 				~file(){}
 				
-				std::string line(int i){
-					node *t = root;
-					std::string s;
-					for(i;i>0;i--)
-						t=t->next;
-					if(t!=NULL)
-						return t->line;
+				// LINE ------------------------------------------------			
+				std::string line(int i=-1){
+					std::string err;
+					if(i>=0){
+						node *t = root;
+						for(i;i>0;i--)
+							t=t->next;
+						if(t!=NULL)
+							return t->line;
+						else
+							return err.erase();
+					}
 					else
-						return s.erase();
+						return err.erase();
 				}
 				
+				// LOAD ------------------------------------------------
 				int load(char* s='\0'){
 					if(s!='\0'){
 						node *t = root;
@@ -159,7 +155,8 @@ namespace shorthand {
 					}
 					return 0;
 				}
-						
+				
+				// SAVE ------------------------------------------------
 				int save(char* s='\0'){
 					if(s!='\0'){
 						node *t = root;
@@ -175,6 +172,7 @@ namespace shorthand {
 					return 0;
 				}
 				
+				// PRINT -----------------------------------------------
 				int print(){
 					node *t = root;
 					int i=0;
@@ -184,45 +182,70 @@ namespace shorthand {
 					}
 					return 1;
 				}		
-		
-				int insert( int i,char* s){
-					node *t=root;
-					while(i>0){
-						if(t->next==NULL)
-							t->next = new node();
-						i--;
-						t=t->next;
+				
+				// INSERT ----------------------------------------------
+				int insert( int i=-1, char* s='\0'){
+					if(i>0&&s!='\0'){
+						node *t=root; bool eof = false;
+						while(i>0){
+							if(t->next==NULL){
+								t->next = new node();
+								eof = true;
+							}
+							i--;
+							t=t->next;
+						}
+						if(eof){
+							std::string k(s); t->line = k;
+							return 1;
+						}
+						else{
+							node *j = new node(t->line);
+							std::string k(s); t->line = k;
+							j->next = t->next;
+							t->next = j;
+							return 1;
+						}
 					}
-					node *j = new node(t->line);
-					std::string k(s); t->line = k;
-					j->next = t->next;
-					t->next = j;
+					return 0;
 				}
 				
-				int remove(int i){
-					node *t=root; node *b=NULL;
-					while(i>0){
-						if(t==NULL)
-							return 0;
-						if(i==1)
-							b=t;
-						i--;
-						t=t->next;
+				// REMOVE ----------------------------------------------
+				int remove(int i=-1){
+					if(i>=0){
+						node *t=root; node *b=NULL;
+						while(i>0){
+							if(t==NULL)
+								return 0;
+							if(i==1)
+								b=t;
+							i--;
+							t=t->next;
+						}
+						if(t==root){
+							root = root->next;
+							delete t;
+						}
+						else{
+							b->next = t->next;
+							delete t;
+						}
 					}
-					if(t==root){
-						root = root->next;
-						delete t;
-					}
-					else{
-						b->next = t->next;
-						delete t;
-					}
+					return 0;
 				}
 				
 				
 		};
 }
 
+/*
+ * USAGE:
+ * 			
+ * 
+ * 
+ * 
+ * 
+ */
 
 
 #endif
