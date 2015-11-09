@@ -1,27 +1,28 @@
-# shorthand
+#shorthand
 
-FLAG class:
-		allows the creation of shorthand::flag objects that compare character strings (user input) against character strings 
-		that define available flags. f.check() is used to check for the presence of characters in both strings.
-			
-			shorthand::flag f(char* flags, char* input)
-				
-				flag.valid_input():				returns true if all input characters are in flag list
-				
-				flag.check('c'):				returns true if char 'c' is in both input and flag list
+####Flag
+creates a flag object that holds two character arrays, one defined by the program, and one from argv[]. The
+"check" function returns true on const characters that are in both strings, and can be used to build a flag 
+handler.
+  * shorthand::flag FLAG(char const *flaglist, char *inputlist)
+    1. int FLAG.check(char c):
+      - returns true if char 'c' is in both input list and flag list
+    2. int FLAG.valid_input();
+      - returns true if all characters in input_list are in flag_list
 
-FILE class:
-		allows creation of shorthand::file objects.
-			
-			shorthand::file f();
-				
-				file.load(char* p): 			loads the file at path "p" line-by-line into a linked list
-				
-				file.save(char* p): 			saves the linked list to path "p"
-				
-				file.print(): 					prints each line preceded by line num (0-n)
-				
-				file.insert(int i, char* s): 	inserts "s" at line number "i", moves following lines down
-				
-				file.remove(int i):				removes line at line number "i", moves following lines up
-		
+####File
+Allows the creation of a file object that can load text files into a linked list, 
+manipulate lines as strings, and save the modified text again.
+  * shorthand::file FILE()
+    1. int FILE.load(char *s)
+      - loads a file line by line into list from location "s"
+    2. int FILE.save(char *s)
+      - saves list into file at path "s"
+    3. int FILE.print()
+      - prints each line in list with line number
+    4. int FILE.insert(int i, string s)
+      - inserts new line consisting of string "s" at line "i"
+    5. int FILE.remove(int i)
+      - removes line at line number "i"
+    6. string FILE.line(int i)
+      - returns string from line "i"
