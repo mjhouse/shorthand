@@ -1,10 +1,11 @@
-//#include <string>  MAY NOT BE NEEDED
+#include <string.h>
 #include <fstream>
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <dirent.h>
 
 #ifndef SHORTHAND_H 
 #define	SHORTHAND_H
@@ -260,15 +261,27 @@ namespace shorthand {
 				buf = (struct stat *)malloc(sizeof(struct stat));
 				
 				if(stat(filepath,buf)==0){
-					if(S_ISDIR(buf->st_mode)){
-						return 1;
+					if(buf->st_size>0){
+						if(S_ISDIR(buf->st_mode)){
+							free(buf);
+							return 1;
+						}
+						else if(S_ISREG(buf->st_mode)){
+							free(buf);
+							return 0;
+						}
+						else{
+							free(buf);
+							return -1;
+						}
 					}
-					else if(S_ISREG(buf->st_mode)){
+					else{
+						free(buf);
 						return -1;
 					}
 				}
-				
 				free(buf);
+				return -1;
 			}
 			else
 				return -1;
@@ -280,10 +293,38 @@ namespace shorthand {
  * 
  * 
  */
-
-		int copy(char *in, char *out){
-			if(exists(in)==1&&exists(out)==1){
-				
+ 	
+		int copy(char *in/*, char *out*/){
+			if(exists(in)!=-1&&exists(in)==1/*&&exists(out)==1*/){
+				struct dirent *entry;
+				DIR *dirp = opendir(in);
+				while(entry=readdir(dirp)){
+					
+					// Copy current path
+					char *fp = (char *)malloc(sizeof(in)+sizeof(entry->d_name)+2);
+					strcpy(fp,in);
+					
+					// Check for trailing "/" and add it if it's not there
+					int j=0;
+					for(int i=0;in[i]!='\0';i++)
+						if(in[i+1]=='\0') j=i;
+					if(fp[j]!='/')
+						strcat(fp,"/");
+					
+					// Add the file name if it isn't ".." or "."
+					if(strcmp(entry->d_name, "..")!=0&&strcmp(entry->d_name, ".")!=0){
+						strcat(fp, entry->d_name);
+						if(exists(fp)==1){
+							printf("DIR: %s\n", fp);
+						}
+						else if(exists(fp)==0){
+							printf("FILE: %s\n", fp);
+						}
+					}
+					// free memory allocated to fp
+					free(fp);
+				}
+				return 1;
 			}
 			else
 				return -1;
