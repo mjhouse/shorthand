@@ -315,9 +315,11 @@ namespace shorthand {
 					if(strcmp(entry->d_name, "..")!=0&&strcmp(entry->d_name, ".")!=0){
 						strcat(fp, entry->d_name);
 						if(exists(fp)==1){
+							// IS DIR
 							printf("DIR: %s\n", fp);
 						}
 						else if(exists(fp)==0){
+							// IS FILE
 							printf("FILE: %s\n", fp);
 						}
 					}
