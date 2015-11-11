@@ -3,9 +3,11 @@
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
-//#include <unistd.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #ifndef SHORTHAND_H 
 #define	SHORTHAND_H
@@ -254,10 +256,6 @@ namespace shorthand {
  * 	USAGE: 
  * 			They're really simple.
  */
- 
-		int buildargv(char *s){
-			
-		}
 		
 		int findlen(char *s){
 			for(int i=0;s[i]!=0;i++)
@@ -376,15 +374,33 @@ namespace shorthand {
  * 
  */
  
-		int exec(char *b){
+		int run(char *s, char* argv[]){
+			//EXEC
+			pid_t pid = fork();
+			if(pid==0){
+				//CHILD
+				execvp(s,argv);
+			}
+			else if(pid<0){
+				//FAILED: ERROR
+				return 0;
+			}
+			else{
+				//PARENT
+				int retstat;
+				waitpid( pid, &retstat, 0);
+				return 1;
+			}
+			return 0;
+		}
+ 
+		int exec(char *b, char* argv[]){
 		/* tar czf name_of_archive_file.tar.gz name_of_directory_to_tar */
 		
 			if(exists(b)==-1){		// GO FIND IT
 				char* paths = getenv("PATH"); int j=0;
 				char p[findlen(paths)+1];
 				strcpy(p, paths);
-				
-				//printf("%s",p);
 				
 				char *tok;
 				tok = strtok(p, ":");;
@@ -395,12 +411,15 @@ namespace shorthand {
 						strcat(s,b);
 					if(exists(s)==0){
 						//EXEC
+						return run(s,argv);
 					}
 					tok = strtok( NULL, ":");
 				}
+				return 0;
 			}
 			else if(exists(b)==0){
-				//it's a full path
+				//EXEC
+				return run(b,argv);
 			}
 			return 0;
 		}
@@ -408,9 +427,9 @@ namespace shorthand {
 		
 /*
  *	TODO:
- * 			1. make a simplified exec function 
- * 			2. 
- * 			3. possibly push copy, exists, exec functions out into different header
+ * 			1. make a function that can build an argv from a char*
+ * 			2. build error handling function(s)
+ * 			3. possibly push copy, exists, exec etc. functions out into different header
  */
 
 }
