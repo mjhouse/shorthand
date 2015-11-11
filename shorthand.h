@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <stdlib.h>
 #include <dirent.h>
 
@@ -52,8 +52,7 @@ namespace shorthand {
 					flag_list = 0;
 					input_list = 0;
 				}
-				flag(char const *flags=0, char* input=0){  	//overloaded to accept initial values
-					//printf("%s\n%s\n%s\n", flags, ignore, input);
+				flag(char const *flags, char* input){  	//overloaded to accept initial values
 					if(flags!=0&&input!=0){
 						flag_list = flags;
 						input_list = input;
@@ -98,7 +97,7 @@ namespace shorthand {
  * 			Less-messy file handling for manipulating text files.
  * 
  * USAGE: 
- * 			create a file object using "shorthand::file f()", and then use f.line(), f.load(), 
+ * 			create a file object using "shorthand::file f;", and then use f.line(), f.load(), 
  * 			f.save(), f.print(), f.insert() and f.remove() to-
  * 				* return a string from a node
  * 				* load a file into the linked list
@@ -150,8 +149,8 @@ namespace shorthand {
 				}
 				
 				// LOAD ------------------------------------------------
-				int load(char* s='\0'){
-					if(s!='\0'){
+				int load(char* s){
+					if(s!=0){
 						node *t = root;
 						std::fstream f;
 						std::string l;
@@ -168,8 +167,8 @@ namespace shorthand {
 				}
 				
 				// SAVE ------------------------------------------------
-				int save(char* s='\0'){
-					if(s!='\0'){
+				int save(char* s){
+					if(s!=0){
 						node *t = root;
 						std::fstream f;
 						f.open(s, std::fstream::out);
@@ -195,8 +194,8 @@ namespace shorthand {
 				}		
 				
 				// INSERT ----------------------------------------------
-				int insert( int i=-1, char* s='\0'){
-					if(i>0&&s!='\0'){
+				int insert( int i, char* s){
+					if(i>=0&&s!=0){
 						node *t=root; bool eof = false;
 						while(i>0){
 							if(t->next==NULL){
@@ -222,7 +221,7 @@ namespace shorthand {
 				}
 				
 				// REMOVE ----------------------------------------------
-				int remove(int i=-1){
+				int remove(int i){
 					if(i>=0){
 						node *t=root; node *b=NULL;
 						while(i>0){
@@ -247,6 +246,30 @@ namespace shorthand {
 				
 				
 		};
+
+/*
+ *  Utility Functions:
+ * 						probably get pushed out to another file at some point
+ * 
+ * 	USAGE: 
+ * 			They're really simple.
+ */
+ 
+		int buildargv(char *s){
+			
+		}
+		
+		int findlen(char *s){
+			for(int i=0;s[i]!=0;i++)
+				if(s[i+1]==0) return i;
+		}
+
+		int last_slash(char *s){
+			int j = findlen(s);
+			if(s[j]!='/')
+				strcat(s,"/");
+			return 0;
+		}
 
 /*
  * 	Exists:
@@ -298,7 +321,7 @@ namespace shorthand {
  */
 		
 		int copy(char *in, char *out){
-			if(exists(in)!=-1&&exists(in)==1&&exists(out)==1){ // both paths have to be dir
+			if(exists(in)==1&&exists(out)==1){ // both paths have to be dir
 				struct dirent *entry;
 				DIR *dirp = opendir(in);
 				while(entry=readdir(dirp)){
@@ -310,18 +333,8 @@ namespace shorthand {
 					strcpy(fo,out);
 					
 					// Check for trailing "/" and add it if it's not there
-					int j=0;
-					for(int i=0;in[i]!='\0';i++)
-						if(in[i+1]=='\0') j=i;
-					if(fp[j]!='/')
-						strcat(fp,"/");
-					
-					j=0;
-					for(int i=0;out[i]!='\0';i++)
-						if(out[i+1]=='\0') j=i;
-					if(fo[j]!='/')
-						strcat(fo,"/");
-					
+					last_slash(fo);
+					last_slash(fp);
 					
 					// Add the file name if it isn't ".." or "."
 					if(strcmp(entry->d_name, "..")!=0&&strcmp(entry->d_name, ".")!=0){
@@ -330,14 +343,12 @@ namespace shorthand {
 						if(exists(fp)==1){
 							// IS DIR: duplicate directory structure at out
 							mkdir(fo, 0700);
-							if(strncmp(fp,fo,j)!=0){
-								printf("DIR: %s\n", fp);
+							if(strncmp(fp,fo,findlen(fo))!=0){
 								copy(fp,fo);	
 							}
 						}
 						else if(exists(fp)==0){
-							// IS FILE: copy file
-							//printf("FILE: %s\n", fp);
+							// IS FILE: copy file to out
 							std::ifstream i(fp, std::ios::binary);
 							std::ofstream o(fo, std::ios::binary);
 							o << i.rdbuf();
@@ -353,13 +364,53 @@ namespace shorthand {
 			else
 				return -1;
 		}
-
-
+		
+		
+		
+		
+/*
+ *  Exec:
+ * 
+ * 
+ * 	USAGE:
+ * 
+ */
+ 
+		int exec(char *b){
+		/* tar czf name_of_archive_file.tar.gz name_of_directory_to_tar */
+		
+			if(exists(b)==-1){		// GO FIND IT
+				char* paths = getenv("PATH"); int j=0;
+				char p[findlen(paths)+1];
+				strcpy(p, paths);
+				
+				//printf("%s",p);
+				
+				char *tok;
+				tok = strtok(p, ":");;
+				while(tok!=NULL){
+						char s[findlen(tok)+1];
+						strcpy(s,tok);
+						last_slash(&s[0]);
+						strcat(s,b);
+					if(exists(s)==0){
+						//EXEC
+					}
+					tok = strtok( NULL, ":");
+				}
+			}
+			else if(exists(b)==0){
+				//it's a full path
+			}
+			return 0;
+		}
+		
+		
 /*
  *	TODO:
  * 			1. make a simplified exec function 
- * 			2. make compression function
- * 			3. possibly push copy, exists, compression functions out into different header
+ * 			2. 
+ * 			3. possibly push copy, exists, exec functions out into different header
  */
 
 }
