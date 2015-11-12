@@ -250,23 +250,51 @@ namespace shorthand {
 		};
 
 /*
- *  Utility Functions:
- * 						probably get pushed out to another file at some point
+ *  Utilities:
+ * 				probably get pushed out to another file at some point
  * 
  * 	USAGE: 
  * 			They're really simple.
  */
-		
+	
+// Findlen: finds length of string -------------------------------------	
 		int findlen(char *s){
 			for(int i=0;s[i]!=0;i++)
 				if(s[i+1]==0) return i;
 		}
-
+		
+// Last_slash: adds trailing slash -------------------------------------
 		int last_slash(char *s){
 			int j = findlen(s);
 			if(s[j]!='/')
 				strcat(s,"/");
 			return 0;
+		}
+
+// Find_wc: returns word count of string -------------------------------
+		int find_wc(char *s){
+			int j=0; 
+			for(int i=0;s[i]!='\0';i++){
+				if(s[i+1]==' '&&s[i]!=' ')
+					j++;
+				if(s[i+1]=='\0'&&s[i]!=' ')
+					j++;
+			}
+			return j;
+		}
+		
+// Build_args: builds argv[] given char* -------------------------------
+// NOT WORKING
+		char** build_args(char* s){
+			char* args[find_wc(s)+1] = {0};
+			char *tok = strtok(s," ");
+			for(int i=0;tok!=NULL;i++){
+				args[i] = (char *)malloc(sizeof(tok)+1);
+				strcpy(args[i],tok);
+				//printf("Size %d: Value %s\n", sizeof(args[i]),args[i]);
+				tok = strtok(NULL," ");
+			}
+			return args;
 		}
 
 /*
@@ -367,11 +395,12 @@ namespace shorthand {
 		
 		
 /*
- *  Exec:
+ *  Exec/Run:
  * 
- * 
+ * 			Simple wrapper for execvp()+fork() functions basically.
+ * 			
  * 	USAGE:
- * 
+ * 			pass char *s equal to an executable name (or path to executable) and argv arguments.
  */
  
 		int run(char *s, char* argv[]){
@@ -430,6 +459,15 @@ namespace shorthand {
  * 			1. make a function that can build an argv from a char*
  * 			2. build error handling function(s)
  * 			3. possibly push copy, exists, exec etc. functions out into different header
+ */
+ 
+ /*
+ *	Checklist for Bumblebee:
+ * 			1. exec (for tar/untar/secondary script)
+ * 			2. file management (for config file)
+ * 
+ * 	Optional:
+ * 			1. flag management
  */
 
 }
