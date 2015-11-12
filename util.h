@@ -73,5 +73,16 @@
 			}
 			return j;
 		}
+// Basename: returns the name of the lowest dir in path ----------------
+		char* basename(char *s){
+			char *ptr;
+			for(int i=0;s[i]!='\0';i++){
+				if(s[i]=='/'&&s[i+1]!='\0')
+					ptr = &s[i+1];
+				if(s[i]=='/'&&s[i+1]=='\0')
+					s[i]='\0';
+			}
+			return ptr;
+		}
 
 #endif
