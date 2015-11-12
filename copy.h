@@ -68,4 +68,6 @@ int copy(std::string a, std::string b){
 	return copy(a.c_str(),b.c_str());
 }
 
+
+
 #endif
