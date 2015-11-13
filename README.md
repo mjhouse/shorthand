@@ -26,15 +26,3 @@ manipulate lines as strings, and save the modified text again.
       - removes line at line number "i"
     6. string FILE.line(int i)
       - returns string from line "i"
-      
-#Copy.h
-contains a recursive copy function and wrappers to allow calling with
-strings or char*.
-
-	* requires util.h
-	
-#Exec.h
-contains an exec function to make executions easier. Has wrappers to enable calling
-w/ strings, char* or char*/argv[].
-
-	* requires util.h
