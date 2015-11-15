@@ -106,14 +106,14 @@ namespace sh {
 // NODE ----------------------------------------------------------------
 				class node{
 					public:
-						node(char *s='\0'){ 
+						node(std::string s){ 
 							line = s;
 							next = NULL;
 						}
 						~node(){}
 						
 						node *next;
-						char *line;
+						std::string line;
 						//int flag;
 				};
 			private:
@@ -124,38 +124,10 @@ namespace sh {
 				file(){
 					root = new node();
 				}
-				file(char *s){
-					root = new node();
-					if(s!=0){
-						node *t = root;
-						std::fstream f(s, std::fstream::in);
-						std::string l;
-						while(getline(f,l)){
-							t->line = &l[0u];
-							t->next = new node();
-							t = t->next;
-						}
-						f.close();
-					}
-				}
 				~file(){
 					delete root;
 				}
-				
-				int save(char* s){
-					if(s!=0){
-						node *t = root;
-						std::fstream f(s, std::fstream::out);
-						while(t->next!=NULL){
-							f << t->line << std::endl;
-							t=t->next;
-						}
-						f.close();
-						return 1;
-					}
-					return 0;
-				}
-				/*
+
 				// LINE ------------------------------------------------			
 				std::string line(int i=-1){
 					std::string err;
@@ -171,9 +143,9 @@ namespace sh {
 					else
 						return err.erase();
 				}
-				*/
+
 				// LOAD ------------------------------------------------
-			/*	int load(char* s){
+				int load(char* s){
 					if(s!=0){
 						node *t = root;
 						std::fstream f;
@@ -189,9 +161,7 @@ namespace sh {
 					}
 					return 0;
 				}
-				*/
 				
-				/*
 				// SAVE ------------------------------------------------
 				int save(char* s){
 					if(s!=0){
@@ -292,8 +262,6 @@ namespace sh {
 					}
 					return 0;
 				}
-				*/
-				
 		};
 }
 #endif
