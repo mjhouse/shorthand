@@ -114,7 +114,6 @@ namespace sh {
 						
 						node *next;
 						std::string line;
-						//int flag;
 				};
 			private:
 				node *root;
@@ -215,30 +214,6 @@ namespace sh {
 					}
 					return 0;
 				}
-				// SET_FLAG --------------------------------------------
-				int set_flag(int f, int linenum){
-					node *t=root;
-					for(int i=0;t!=NULL;i++){
-						if(i==linenum){
-							t->flag = f;
-							return 1;
-						}
-						t=t->next;
-					}
-					return 0;
-				}
-				// RETURN_FLAG -----------------------------------------
-				int return_flag(int linenum){
-					node *t=root;
-					for(int i=0;t!=NULL;i++){
-						if(i==linenum){
-							return t->flag;
-						}
-						t=t->next;
-					}
-					return 0;
-				}
-				
 				// REMOVE ----------------------------------------------
 				int remove(int i){
 					if(i>=0){
