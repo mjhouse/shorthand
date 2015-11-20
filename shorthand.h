@@ -4,7 +4,7 @@
 #ifndef SHORTHAND_H 
 #define	SHORTHAND_H
 
-namespace sh {
+namespace shorthand {
 /*
  * 	Flag:
  * 			Handles true/false flag checking against a hardcoded char array of flags.
