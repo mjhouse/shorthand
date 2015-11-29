@@ -1,9 +1,9 @@
-#ifndef STACK_H
-#define STACK_H
+#ifndef LISTS_H
+#define LISTS_H
 
-#include <iostream>
-
-//#define NULL 0
+#ifndef _GLIBCXX_IOSTREAM
+	#define NULL 0
+#endif
 
 namespace shorthand {
 
