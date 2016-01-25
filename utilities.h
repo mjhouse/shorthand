@@ -3,8 +3,6 @@
 
 /*
 
-A simple binary tree
-
 Copyright (C) 2015  Michael House
 
 This program is free software; you can redistribute it and/or modify
