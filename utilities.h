@@ -42,15 +42,6 @@ namespace shorthand {
 		return tmp;
 	}
 
-/*
- * LOAD:
- * 		loads a given file path into a linked list
- */
- 
-	shorthand::list* load(std::string path){
-		
-	} 
-
 }
 
 #endif
